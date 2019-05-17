@@ -35,12 +35,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private  AuthenticationManager authenticationManager;
 
+    private static final String[] allowedPaths = { "/api/user/**",
+            "/",
+            "/favicon.ico",
+            "/**/*.png",
+            "/**/*.gif",
+            "/**/*.svg",
+            "/**/*.jpg",
+            "/**/*.html",
+            "/**/*.css",
+            "/**/*.js"};
+
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
         http.cors()
             .and().csrf().disable().exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint)
             .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and().authorizeRequests().antMatchers("/api/user/**").permitAll().anyRequest().authenticated()
+            .and().authorizeRequests().antMatchers(allowedPaths).permitAll().anyRequest().authenticated()
             .and().addFilter(new JwtAuthenticationFilter(authenticationManager)).addFilter(new JwtAuthorizationFilter(authenticationManager));
     }
 
